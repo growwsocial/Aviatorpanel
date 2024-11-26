@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login</title>
+    <style>
+        /* Hacker theme styling */
+        @keyframes hacker-animate {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+
+        @keyframes matrix-rain {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(100%); }
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: black;
+            color: #00ff00;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: hacker-animate 15s linear infinite;
+        }
+
+        /* Matrix rain effect */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                rgba(0, 255, 0, 0.1),
+                rgba(0, 255, 0, 0.1) 2px,
+                transparent 2px,
+                transparent 4px
+            );
+            animation: matrix-rain 10s linear infinite;
+        }
+
+        .login-container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 15px #00ff00;
+        }
+
+        .login-container h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 5px;
+            color: #00ff00;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            outline: none;
+            background: black;
+            color: #00ff00;
+            caret-color: #00ff00;
+        }
+
+        .input-group input:focus {
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .login-button, .create-account-button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .login-button {
+            background: linear-gradient(135deg, #00ff00, #00ff00);
+            color: black;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .login-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #00ff00;
+        }
+
+        .create-account-button {
+            margin-top: 10px;
+            background: transparent;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+        }
+
+        .create-account-button:hover {
+            background: #008000;
+            color: black;
+        }
+
+        .error {
+            color: red;
+            font-size: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Login</h1>
+        <div class="input-group">
+            <label for="userID">User ID</label>
+            <input type="text" id="userID" placeholder="Enter your User ID">
+        </div>
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your Password">
+        </div>
+       
+        <button id="loginButton" class="login-button" disabled>Login</button>
+        
+        <button class="create-account-button" onclick="window.location.href='https://wa.me/+918309227010?text=Hello%20Sir,%20I%20Need%20Aviator%20Hack%20Pannel%20Free!';">Get ID & Password</button>
+
+    </div>
+
+    <script>
+    let users = {}; // To store fetched user data
+
+    // Function to fetch user data from URL
+    const fetchUserData = async () => {
+        try {
+            const response = await fetch('https://raw.githubusercontent.com/growwsocial/Test/refs/heads/main/users.json'); // Replace with your URL
+            const data = await response.json();
+            users = data; // Save the fetched data
+            console.log('Users loaded:', users);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            alert('Failed to load user data.');
+        }
+    };
+
+    // Fetch user data on page load
+    fetchUserData();
+
+    const userIDInput = document.getElementById('userID');
+    const passwordInput = document.getElementById('password');
+    const loginButton = document.getElementById('loginButton');
+    const error = document.getElementById('error');
+
+    // Event listener to validate user input immediately after input
+    [userIDInput, passwordInput].forEach(input => {
+        input.addEventListener('input', async () => {
+            const userID = userIDInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            // Fetch user data each time an input changes
+            await fetchUserData();
+
+            // Check if the userID exists in the current 'users' data
+            const isUserIDCorrect = userID in users;
+            const isPasswordCorrect = isUserIDCorrect && users[userID] === password;
+
+            userIDInput.style.borderColor = isUserIDCorrect ? 'green' : 'red';
+            passwordInput.style.borderColor = isPasswordCorrect ? 'green' : 'red';
+
+            if (isPasswordCorrect) {
+                loginButton.disabled = false;
+                error.style.display = 'none';
+            } else {
+                loginButton.disabled = true;
+                error.style.display = 'block';
+            }
+        });
+    });
+
+    // Handle login button click event
+    loginButton.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        const userID = userIDInput.value.trim();
+
+        // Fetch data before redirecting to ensure fresh validation
+        fetchUserData().then(() => {
+            const password = passwordInput.value.trim();
+
+            // Ensure the user data is valid
+            if (userID in users && users[userID] === password) {
+                // Redirect to the target URL if login is successful
+                window.location.href = 'https://follofgbjmeh.socpanel.com';
+            } else {
+                error.style.display = 'block';
+                loginButton.disabled = true;
+            }
+        });
+    });
+</script>
+
+
+
+</body>
+</html>
